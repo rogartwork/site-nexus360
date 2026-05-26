@@ -7,8 +7,6 @@ services:
       dockerfile: Dockerfile
     container_name: nexus360_app
     restart: always
-    ports:
-      - "3000:3000"
     environment:
       - NODE_ENV=production
       # Map the database URL to the internal mounted volume path
@@ -18,6 +16,21 @@ services:
     volumes:
       # This ensures the SQLite database persists between container restarts
       - nexus360_data:/app/data
+    
+    # === CONFIGURAÇÃO TRAEFIK ===
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.nexus360.rule=Host(`nexus360.workmanos.com.br`)"
+      - "traefik.http.routers.nexus360.entrypoints=websecure"
+      - "traefik.http.routers.nexus360.tls.certresolver=letsencrypt"
+      - "traefik.http.services.nexus360.loadbalancer.server.port=3000"
+    
+    networks:
+      - rogartwork
 
 volumes:
   nexus360_data:
+
+networks:
+  rogartwork:
+    external: true
