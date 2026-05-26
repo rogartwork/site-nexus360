@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  nexus360:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nexus360_app
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      # Map the database URL to the internal mounted volume path
+      - DATABASE_URL=file:/app/data/dev.db
+      # Add any other environment variables needed for production below
+      - SESSION_PASSWORD=complex_password_at_least_32_characters_long
+    volumes:
+      # This ensures the SQLite database persists between container restarts
+      - nexus360_data:/app/data
+
+volumes:
+  nexus360_data:
