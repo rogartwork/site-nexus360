@@ -1,0 +1,1 @@
+const { PrismaClient } = require('@prisma/client'); const bcrypt = require('bcryptjs'); const prisma = new PrismaClient(); async function main() { const hashedPassword = await bcrypt.hash('123456', 10); await prisma.user.update({ where: { username: 'cliente_teste' }, data: { password: hashedPassword } }); console.log('Password reset successfully'); } main();
